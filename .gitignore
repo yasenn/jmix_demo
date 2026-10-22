@@ -1,2 +1,5 @@
 */build/*
 */.gradle/*
+.nix/
+poc-service-request/build/
+poc-service-request/.gradle/
