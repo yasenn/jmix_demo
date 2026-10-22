@@ -3,3 +3,5 @@
 .nix/
 poc-service-request/build/
 poc-service-request/.gradle/
+nix/nix-portable
+docker/.build/

@@ -1,8 +1,9 @@
+name: poc-service-request
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - "8080:8080"
     restart: unless-stopped
