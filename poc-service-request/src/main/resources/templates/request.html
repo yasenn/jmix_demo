@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявка</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-brand"><span class="app-logo"></span>Service Desk</div>
+        <div class="app-user">admin</div>
+    </header>
+    <div class="app-body">
+        <aside class="app-nav">
+            <a th:href="@{/}" class="active">Заявки</a>
+            <a th:href="@{/mock-1c}">Мок 1С</a>
+            <a href="#" class="disabled">Отчёты</a>
+            <a href="#" class="disabled">Настройки</a>
+        </aside>
+        <main class="app-main">
+            <div class="breadcrumb">
+                <a th:href="@{/}">Заявки</a>
+                <span class="sep">/</span>
+                <span th:text="${request.title}">Заявка</span>
+            </div>
+            <h1 class="page-title" th:text="${request.title}">Заявка</h1>
+
+            <div class="request-grid">
+                <div>
+                    <div class="card">
+                        <div class="card-header">Детали</div>
+                        <div class="card-body">
+                            <div class="kv">
+                                <div class="k">Статус</div>
+                                <div class="v">
+                                    <span class="status"
+                                          th:classappend="${'status-' + #strings.toLowerCase(request.status)}"
+                                          th:text="${@uiHelpers.statusRu(request.status)}"></span>
+                                </div>
+                            </div>
+                            <div class="kv">
+                                <div class="k">Согласующий</div>
+                                <div class="v" th:text="${request.approver}"></div>
+                            </div>
+                            <div class="kv">
+                                <div class="k">Создано</div>
+                                <div class="v" th:text="${@uiHelpers.dateTimeRu(request.createdAt)}"></div>
+                            </div>
+                            <div class="kv">
+                                <div class="k">Описание</div>
+                                <div class="v" th:text="${request.description}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" th:if="${task != null}">
+                        <div class="card-header">Ожидает согласования</div>
+                        <div class="card-body">
+                            <div class="kv">
+                                <div class="k">Задача</div>
+                                <div class="v" th:text="${task.name}"></div>
+                            </div>
+                            <div class="kv">
+                                <div class="k">Исполнитель</div>
+                                <div class="v" th:text="${task.assignee}"></div>
+                            </div>
+                            <p style="margin:16px 0 8px;color:var(--text-secondary);font-size:13px;">
+                                Если решение не будет принято, заявка автоматически согласуется по таймеру (1 минута).
+                            </p>
+                            <div class="form-actions">
+                                <form th:action="@{'/requests/' + ${request.id} + '/approve'}" method="post">
+                                    <button type="submit" class="btn btn-success">Согласовать</button>
+                                </form>
+                                <form th:action="@{'/requests/' + ${request.id} + '/reject'}" method="post">
+                                    <button type="submit" class="btn btn-danger">Отклонить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" th:if="${task == null}">
+                        <div class="card-header">Результат</div>
+                        <div class="card-body">
+                            <p style="margin:0;color:var(--text-secondary);">
+                                Процесс согласования завершён. Итоговый маршрут отображается на диаграмме.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-header">Диаграмма процесса</div>
+                        <div class="card-body">
+                            <div class="preview-wrap">
+                                <img th:src="@{'/requests/' + ${request.id} + '/diagram'}" alt="Диаграмма процесса">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a th:href="@{/}" class="btn btn-secondary mt-24">К списку</a>
+        </main>
+    </div>
+</div>
+</body>
+</html>

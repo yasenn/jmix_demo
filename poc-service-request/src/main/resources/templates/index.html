@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявки на обслуживание</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-brand"><span class="app-logo"></span>Service Desk</div>
+        <div class="app-user">admin</div>
+    </header>
+    <div class="app-body">
+        <aside class="app-nav">
+            <a th:href="@{/}" class="active">Заявки</a>
+            <a th:href="@{/mock-1c}">Мок 1С</a>
+            <a href="#" class="disabled">Отчёты</a>
+            <a href="#" class="disabled">Настройки</a>
+        </aside>
+        <main class="app-main">
+            <h1 class="page-title">Заявки на обслуживание</h1>
+
+            <div class="card">
+                <div class="card-header">Все заявки</div>
+                <div class="card-body p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Согласующий</th>
+                                <th>Статус</th>
+                                <th class="col-actions"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="r : ${requests}">
+                                <td th:text="${r.title}"></td>
+                                <td th:text="${r.approver}"></td>
+                                <td>
+                                    <span class="status"
+                                          th:classappend="${'status-' + #strings.toLowerCase(r.status)}"
+                                          th:text="${@uiHelpers.statusRu(r.status)}"></span>
+                                </td>
+                                <td class="col-actions">
+                                    <a th:href="@{'/requests/' + ${r.id}}" class="btn btn-secondary btn-sm">Открыть</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(requests)}">
+                                <td colspan="4" class="empty-state">Заявок пока нет. Создайте первую ниже.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Новая заявка</div>
+                <div class="card-body">
+                    <form action="/requests" method="post">
+                        <div class="field">
+                            <label>Название</label>
+                            <input type="text" name="title" required>
+                        </div>
+                        <div class="field">
+                            <label>Описание</label>
+                            <textarea name="description" rows="3"></textarea>
+                        </div>
+                        <div class="field">
+                            <label>Согласующий</label>
+                            <input type="text" name="approver" value="admin" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Создать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Как работает согласование</div>
+                <div class="card-body">
+                    <div class="strategy-note">
+                        <strong>Стратегия «согласен, если не отвечаю»:</strong> если согласующий
+                        не примет решение в течение <strong>1 минуты</strong>, заявка автоматически
+                        переходит в статус «Согласовано».
+                    </div>
+                    <div class="preview-wrap mt-24">
+                        <img th:src="@{/process/preview}" alt="Схема согласования">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

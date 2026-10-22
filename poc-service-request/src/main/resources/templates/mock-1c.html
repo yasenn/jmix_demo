@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мок-дашборд 1С</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-brand"><span class="app-logo"></span>Service Desk</div>
+        <div class="app-user">admin</div>
+    </header>
+    <div class="app-body">
+        <aside class="app-nav">
+            <a th:href="@{/}">Заявки</a>
+            <a th:href="@{/mock-1c}" class="active">Мок 1С</a>
+            <a href="#" class="disabled">Отчёты</a>
+            <a href="#" class="disabled">Настройки</a>
+        </aside>
+        <main class="app-main">
+            <h1 class="page-title">Мок-дашборд 1С</h1>
+            <p style="margin-top:-12px;color:var(--text-secondary);font-size:13px;">
+                Имитация данных OData из 1С: документы «Платёжное поручение».
+            </p>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Всего</div>
+                    <div class="metric-value primary" th:text="${@uiHelpers.money(total)}">0,00</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Оплачено</div>
+                    <div class="metric-value success" th:text="${@uiHelpers.money(paid)}">0,00</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Ожидает</div>
+                    <div class="metric-value warning" th:text="${@uiHelpers.money(pending)}">0,00</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Документов</div>
+                    <div class="metric-value" th:text="${#lists.size(payments)}">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Платёжные поручения</div>
+                <div class="card-body p-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Номер</th>
+                                <th>Дата</th>
+                                <th>Контрагент</th>
+                                <th>Сумма, ₽</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${payments}">
+                                <td th:text="${p.number}"></td>
+                                <td th:text="${@uiHelpers.dateRu(p.date)}"></td>
+                                <td th:text="${p.counterparty}"></td>
+                                <td th:text="${@uiHelpers.money(p.amount)}"></td>
+                                <td>
+                                    <span class="chip"
+                                          th:classappend="${'chip-' + #strings.toLowerCase(p.status)}"
+                                          th:text="${@uiHelpers.paymentStatusRu(p.status)}"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
